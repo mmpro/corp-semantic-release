@@ -38,6 +38,7 @@ program
     ' is available for BitBucket repositories. Other presets can be installed: npm i conventional-changelog-jquery')
   .option('-r, --releasecount [number]', 'How many releases of changelog you want to generate.', parseInt)
   .option('--mock-push [return code]', 'Used in testing to mock git push, the mock will return [return code]', parseInt)
+  .option('--useTemplate [useTemplate]', 'Optional template to use for conventional-changelog')
   .parse(process.argv);
 
 if (program.dryrun) {
@@ -84,7 +85,16 @@ async.series([
       preset: program.changelogpreset,
       releaseCount: program.releasecount,
     };
-    changelog(options)
+    let context = {}
+    let config = {}
+
+    // useTemplate must be a node_module like ac-conventiona-changelog-template, with context and config
+    if (program.useTemplate) {
+      context = require('../../' + program.useTemplate + '/context.js')
+      config = require('../../' + program.useTemplate + '/config.js')
+    }
+
+    changelog(options, context, config.gitRawCommitsOpts, config.parserOpts, config.writerOpts)
       // Use through() to handle multiple chunks which could be returned from changelog()
       .pipe(through({
         objectMode: true,
