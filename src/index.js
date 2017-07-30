@@ -85,13 +85,13 @@ async.series([
       preset: program.changelogpreset,
       releaseCount: program.releasecount,
     };
-    let context = {}
-    let config = {}
+    let context = {};
+    let config = {};
 
     // useTemplate must be a node_module like ac-conventiona-changelog-template, with context and config
     if (program.useTemplate) {
-      context = require('../../' + program.useTemplate + '/context.js')
-      config = require('../../' + program.useTemplate + '/config.js')
+      context = require('../../' + program.useTemplate + '/context.js');
+      config = require('../../' + program.useTemplate + '/config.js');
     }
 
     changelog(options, context, config.gitRawCommitsOpts, config.parserOpts, config.writerOpts)
